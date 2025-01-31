@@ -1,0 +1,38 @@
+name: publish
+
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+#  make_tag:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - uses: actions/setup-python@v3
+#      - name: make tag
+#        run: |
+#          pip install cython setuptools
+#          VERSION=`python setup.py version`
+#          git tag $VERSION && git push --tags || true # always succeed even if there's no new tag to push
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v3
+      - name: Set up QEMU
+        if: runner.os == 'Linux'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
+      - name: build wheel
+        run: |
+          pip install hatch
+          cd python
+          hatch build
+          ls dist/
