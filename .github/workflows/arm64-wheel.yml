@@ -21,7 +21,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-18.04]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v3
@@ -32,6 +32,7 @@ jobs:
           platforms: all
       - name: build wheel
         run: |
+          apt-get install cmake
           pip install hatch
           cd python
           hatch build
